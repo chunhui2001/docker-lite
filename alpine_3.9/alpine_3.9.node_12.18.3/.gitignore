@@ -1,0 +1,4 @@
+work/work1/node_modules
+work/work1/package-lock.json
+
+work/*/dist

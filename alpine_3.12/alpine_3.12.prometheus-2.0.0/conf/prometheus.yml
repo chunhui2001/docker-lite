@@ -1,0 +1,28 @@
+# prometheus global config
+global:
+  scrape_interval: 1s
+  
+scrape_configs:
+  ######################################
+  #### 采集 prometheus 的性能指标作业 ####
+  ######################################
+  # - job_name: 'prometheus'
+  #   scrape_interval: 5s
+  #   static_configs:
+  #     - targets: ['localhost:9090']
+  ######################################
+  #### 采集 pushgateway 的性能指标作业 ###
+  ######################################
+  # 当 prometheus 抓取目标时将附加抓取作业的名称(此处为pushgateway), 及填充目标的主机或 ip 地址的 instance 标签
+  - job_name: 'pushgateway'
+    # hornor_labels 为 true, prometheus 将使用 pushgateway 上的 job 和 instance 标签
+    honor_labels: true
+    # 使用基于文件的服务发现
+    file_sd_configs:
+      - files:
+        - targets/pushgateway/*.json
+        refresh_interval: 5ms
+  # - job_name: 'pushgateway'
+  #   scrape_interval: 5s
+  #   static_configs:
+  #     - targets: ['pushgateway:9091']

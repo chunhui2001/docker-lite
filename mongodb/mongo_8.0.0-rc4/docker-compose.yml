@@ -1,0 +1,29 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+
+services:
+  mon1:
+    container_name: mon1
+    #platform: linux/amd64
+    image: chunhui2001/mongodb:mongo_8.0.0-rc4
+    hostname: mon1
+    #mem_limit: 100m
+    ports:
+      - 27017:27017
+    #entrypoint: ["/bin/sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
+    command: ["--config", "/etc/mongodb.conf"]
+    volumes:
+      - ./mongod.conf:/etc/mongodb.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.51

@@ -1,0 +1,64 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+
+services:
+  zk1:
+    container_name: zk1
+    image: chunhui2001/alpine:3.9.zookeeper_3.6.1
+    hostname: zk1
+    mem_limit: 100m
+    ports:
+      - 2181:2181
+    entrypoint: ["/opt/zookeeper/bin/entrypoint.sh"]
+    command: ["/opt/zookeeper/bin/bootstrap.sh", "/opt/zookeeper/bin/zkServer.sh", "start-foreground"]
+    volumes:
+      - ./conf/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
+      - ./conf/myid.1:/opt/zookeeper/data/myid:ro
+    restart: always
+    networks:
+      br0:
+        ipv4_address: 172.16.197.41
+  zk2:
+    container_name: zk2
+    hostname: zk2
+    image: chunhui2001/alpine:3.9.zookeeper_3.6.1
+    mem_limit: 100m
+    ports:
+      - 2182:2181
+    entrypoint: ["/opt/zookeeper/bin/entrypoint.sh"]
+    command: ["/opt/zookeeper/bin/bootstrap.sh", "/opt/zookeeper/bin/zkServer.sh", "start-foreground"]
+    volumes:
+      - ./conf/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
+      - ./conf/myid.2:/opt/zookeeper/data/myid:ro
+    restart: always
+    networks:
+      br0:
+        ipv4_address: 172.16.197.42
+  zk3:
+    container_name: zk3
+    image: chunhui2001/alpine:3.9.zookeeper_3.6.1
+    hostname: zk3
+    mem_limit: 100m
+    ports:
+      - 2183:2181
+    entrypoint: ["/opt/zookeeper/bin/entrypoint.sh"]
+    command: ["/opt/zookeeper/bin/bootstrap.sh", "/opt/zookeeper/bin/zkServer.sh", "start-foreground"]
+    volumes:
+      - ./conf/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
+      - ./conf/myid.3:/opt/zookeeper/data/myid:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.43
+
+
+      

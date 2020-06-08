@@ -1,0 +1,67 @@
+
+
+# ============================== Filebeat inputs ===============================
+filebeat.inputs:
+
+- type: log
+  id: mywallet-crypto-kstream
+  enabled: true
+  paths:
+    - /tmp/go-applogs/mywallet-crypto-kstream/applog.txt
+  fields: 
+    app: mywallet-crypto-kstream
+  multiline:
+    # pattern for error log, if start with space or cause by 
+    pattern: '^[[:space:]]+(at|\.{3})\b|^Caused by:'
+    ### 符合条件才合并，容易有漏网之鱼: negate参数为false，表示“否定参数=false”。multiline多行参数负负得正，表示符合pattern、match条件的行会融入多行之中、成为一条完整日志的中间部分。
+    negate:  false
+    match:   after
+    #pattern: '^\['
+    ### 不符合条件通通合并，需事先约定: negate参数为true，表示“否定参数=true”。multiline多行参数为负，表示符合match条件的行是多行的开头，是一条完整日志的开始或结尾。
+    #negate: true   
+    ### 如果match=after， 则以b开头的行是一条完整日志的开始，它和后面多个不以b开头的行组成一条完整日志；
+    ### 如果match=before，则以b开头的行是一条完整日志的结束，它和前面多个不以b开头的合并成一条完整日志。   
+    #match: after     
+
+
+# ---------------------------- Console Output ----------------------------
+output.console:
+  pretty: true
+
+name: filebeat-server-1
+
+
+# {
+#   "@timestamp": "2022-09-19T14:22:48.346Z",
+#   "@metadata": {
+#     "beat": "filebeat",
+#     "type": "_doc",
+#     "version": "8.4.0"
+#   },
+#   "message": "2022-09-19T14:22:48.191Z [INFO] - {.....kstream-kline-restful.go(280):57} > Binance-KLine: connectId=z3VIy3UswVo, opcode=1, message={\"E\":1663597368151,\"e\":\"kline\",\"k\":{\"B\":\"0\",\"L\":335795867,\"Q\":\"167370.00000000\",\"T\":1663597379999,\"V\":\"167370.00000000\",\"c\":\"0.99990000\",\"f\":335795677,\"h\":\"1.00000000\",\"i\":\"1m\",\"l\":\"0.99990000\",\"n\":191,\"o\":\"0.99990000\",\"q\":\"259384.79760000\",\"s\":\"BUSDUSDT\",\"t\":1663597320000,\"v\":\"259394.00000000\",\"x\":false},\"s\":\"BUSDUSDT\"}",
+#   "fields": {
+#     "app": "mywallet-crypto-kstream"
+#   },
+#   "input": {
+#     "type": "log"
+#   },
+#   "agent": {
+#     "type": "filebeat",
+#     "version": "8.4.0",
+#     "ephemeral_id": "76020a8f-5c28-4ada-be9a-0e454bae26a2",
+#     "id": "a4bc02d2-90a3-4dd9-911e-b2542a4d12e3",
+#     "name": "filebeat-server-1"
+#   },
+#   "ecs": {
+#     "version": "8.0.0"
+#   },
+#   "host": {
+#     "name": "filebeat-server-1"
+#   },
+#   "log": {
+#     "file": {
+#       "path": "/tmp/go-applogs/mywallet-crypto-kstream/applog.txt"
+#     },
+#     "offset": 9874687
+#   }
+# }

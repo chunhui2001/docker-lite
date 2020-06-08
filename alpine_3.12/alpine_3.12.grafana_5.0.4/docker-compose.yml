@@ -1,0 +1,27 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+
+services:
+  grafana:
+    container_name: grafana
+    image: chunhui2001/alpine:3.12.grafana_5.0.4
+    hostname: grafana
+    mem_limit: 100m
+    ports:
+      - 3000:3000
+    entrypoint: ["entrypont.sh"]
+    #volumes:
+    #  - ./conf/defaults.ini:/opt/grafana/conf/defaults.ini:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.126

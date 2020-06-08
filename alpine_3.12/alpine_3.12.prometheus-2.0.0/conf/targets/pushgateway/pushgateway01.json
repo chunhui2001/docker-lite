@@ -1,0 +1,3 @@
+[{
+	"targets": ["pushgateway:9091"]
+}]
