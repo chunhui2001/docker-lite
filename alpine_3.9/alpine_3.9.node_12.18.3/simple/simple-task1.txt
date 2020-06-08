@@ -1,0 +1,120 @@
+//Require specific modules
+var gulp = require('gulp');
+var del = require('del');
+var get = require('get-value');
+var $ = require('gulp-load-plugins')();
+var multimatch = require('multimatch');
+var bs = require("browser-sync").create();
+var assemble = require('assemble');
+var app = assemble();
+var guppy = require('git-guppy')(gulp);
+var gutil = require('gulp-util');
+var watch = require('gulp-watch');
+var helpers = require('handlebars-helpers')();
+var runSequence = require('run-sequence');
+
+gulp.task('captions:dist', function() {
+   gulp.src('app/assets/captions/**/*')
+   .pipe(gulp.dest('dist/assets/captions'));
+});
+
+// Copy Task for assets that needs to be moved to /dist on build task
+gulp.task('copy:vendorjs', ['clean:dist'], function(){
+  return gulp.src(['app/assets/scripts/vendor/jquery-2.1.4.min.js'])
+      .pipe(gulp.dest('dist/assets/scripts/vendor'));
+});
+
+// Lint task
+gulp.task('eslint', function() {
+  return gulp.src(['app/{assets,components,pages}/**/*.js', '!app/assets/scripts/vendor/**'])
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError());
+});
+
+gulp.task('pre-commit', function () {
+
+  var filterVendorJs = ['app/**/*.js', '!app/assets/scripts/vendor/*'];
+  var filesToTest = multimatch(guppy.src('pre-commit'), filterVendorJs);
+
+  return gulp.src(filesToTest)
+    .pipe($.plumber())
+    .pipe($.eslint({ rulePaths: ['/'], configFile: '.eslintrc'}))
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError());
+});
+
+//Assemble load task
+gulp.task('load', function(cb) {
+
+  //Set main assemble options
+  app.option('layout', 'default');
+  app.layouts('app/layouts/*.hbs');
+  app.pages('app/pages/**/*.hbs');
+  app.partials('app/components/**/*.hbs');
+  app.engine('hbs', require('engine-handlebars'));
+  app.data(['app/{pages,components,data}/**/*.json']);
+
+  cb();
+});
+
+//Assemble main task
+gulp.task('assemble', ['load'], function(){
+    return app.toStream('pages')
+      .pipe(app.renderFile())
+      .pipe($.extname())
+      .pipe($.flatten())
+      .pipe($.plumber())
+      .pipe(app.dest('.tmp'));
+});
+
+gulp.task('assemble:dist', ['load', 'clean:dist'], function(){
+    return app.toStream('pages')
+      .pipe(app.renderFile())
+      .pipe($.extname())
+      .pipe($.flatten())
+      .pipe($.plumber())
+      .pipe(app.dest('dist'));
+});
+
+gulp.task('usemin', ['assemble:dist', 'sass:dist'], function() {
+  return gulp.src('dist/**/*.html')
+    .pipe($.foreach(function (stream) {
+      return stream
+        .pipe($.plumber())
+        .pipe($.usemin({
+          cssvendor: [$.cssnano()],
+          css: [$.cssnano()],
+          jsvendor: [$.uglify()],
+          js: [$.uglify()]
+        }))
+        .pipe(gulp.dest('dist/'));
+    }));
+
+});
+
+//Serve the site from .tmp directory
+gulp.task('default', ['assemble', 'sass', 'fonts', 'notify:server'], function(){
+
+    var globs = [
+      '.tmp/**/*.html',
+      '.tmp/assets/styles/{,*/}*.css',
+      '.tmp/assets/**/*.js',
+      'app/assets/images/{,*/}*.*'
+    ];
+});
+
+
+//Serve the site from the dist directory
+gulp.task('default:dist', function(){
+  bs.init({
+    notify: false,
+    port: 9000,
+    server: {
+        baseDir: ['dist']
+    }
+  });
+});
+
+gulp.task('build', ['sass:dist', 'usemin', 'images', 'fonts:dist', 'copy:vendorjs','captions:dist'], function(){
+});

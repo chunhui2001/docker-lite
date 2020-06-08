@@ -1,0 +1,42 @@
+{
+	"description": "go-application-pipeline",
+	"version": 2,
+	"processors": [{
+		"grok": {
+			"field": "message",
+			"patterns": ["%{TIMESTAME:@timestamp} \\[%{LEVEL:level}\\] - {%{CODE:line_number}} > %{MSG:msg}"],
+			"pattern_definitions": {
+				"TIMESTAME": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3,10}Z",
+				"LEVEL": "[a-zA-Z]+",
+				"CODE": "[\\w\\W]+",
+				"MSG": "[\\w\\W]+"
+			}
+		}
+	}, {
+		"grok": {
+			"field": "log.file.path",
+			"patterns": ["/tmp/go-applogs/%{APP:app}/applog.txt"],
+			"pattern_definitions": {
+				"APP": "[a-zA-Z0-9\\-]+"
+			}
+		}
+	}, {
+		"lowercase": {
+			"field": "host.name"
+		}
+	}, {
+		"rename": {
+			"field": "host.name",
+			"target_field": "filebeat-server"
+		}
+	}, {
+		"rename": {
+			"field": "log.offset",
+			"target_field": "offset"
+		}
+	}, {
+		"remove": {
+			"field": ["input", "agent", "ecs", "host", "log", "fields", "message"]
+		}
+	}]
+}

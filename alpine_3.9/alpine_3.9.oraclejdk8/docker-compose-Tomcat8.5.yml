@@ -1,0 +1,32 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+    # aliases: net1
+
+services:
+  Tomcat-8.5:                
+    container_name: Tomcat-8.5
+    privileged: true
+    image: chunhui2001/alpine:3.9.Tomcat-8.5
+    hostname: Tomcat-8.5
+    mem_limit: 200m
+    ports: 
+      - 8181:8080
+    # entrypoint: ["java", "-Djava.library.path=/usr/local/tomcat/native-jni-lib", "-jar", "/root/app/app.jar"]
+    volumes:
+      # centos7 as the host and container with selinux enabled.
+      # 在 centos7 下需执行: chcon -Rt svirt_sandbox_file_t config/
+      # - ./conf/redis-5.0.5.conf:/usr/local/redis/redis.conf:ro
+      - ./conf/server.xml:/usr/local/tomcat/conf/server.xml:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.28

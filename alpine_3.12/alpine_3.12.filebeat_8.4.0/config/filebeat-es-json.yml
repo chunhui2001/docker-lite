@@ -1,0 +1,46 @@
+
+
+# ============================== Filebeat inputs ===============================
+filebeat.inputs:
+
+- type: log
+  id: mywallet-applications
+  enabled: true
+  paths:
+    - /tmp/go-applogs/*/applog.txt
+  fields: 
+    app: mywallet-golang-applications
+  multiline:
+    # pattern for error log, if start with space or cause by 
+    pattern: '^[[:space:]]+(at|\.{3})\b|^Caused by:'
+    ### 符合条件才合并，容易有漏网之鱼: negate参数为false，表示“否定参数=false”。multiline多行参数负负得正，表示符合pattern、match条件的行会融入多行之中、成为一条完整日志的中间部分。
+    negate:  false
+    match:   after
+    #pattern: '^\['
+    ### 不符合条件通通合并，需事先约定: negate参数为true，表示“否定参数=true”。multiline多行参数为负，表示符合match条件的行是多行的开头，是一条完整日志的开始或结尾。
+    #negate: true   
+    ### 如果match=after， 则以b开头的行是一条完整日志的开始，它和后面多个不以b开头的行组成一条完整日志；
+    ### 如果match=before，则以b开头的行是一条完整日志的结束，它和前面多个不以b开头的合并成一条完整日志。   
+    #match: after     
+
+#processors:
+#  - decode_json_fields:
+#    fields: ["field1", "field2", ...]
+#    process_array: false
+#    max_depth: 1
+#    target: ""
+#    overwrite_keys: false
+#    add_error_key: true
+
+
+# ---------------------------- ElasticSearch Output ----------------------------
+output.elasticsearch:
+  allow_older_versions: true
+  hosts: ["host.docker.internal:9200"]
+  #pipeline: "go-application-pipeline"
+  indices:
+    - index: "filebeats-applogs-%{+yyyy.MM.dd}"
+
+name: filebeat-server-1
+
+

@@ -1,0 +1,112 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+
+networks:
+    br0:
+      external: true
+
+services:
+  redis.c1:               
+    container_name: redis.c1
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c1
+    mem_limit: 100m
+    ports: 
+      - 6379:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.21
+  redis.c2:     
+    container_name: redis.c2
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c2
+    mem_limit: 100m
+    ports: 
+      - 6381:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.16
+  redis.c3:                
+    container_name: redis.c3
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c3
+    mem_limit: 100m
+    ports: 
+      - 6382:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.17
+  redis.c4:      
+    container_name: redis.c4
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c4
+    mem_limit: 100m
+    ports: 
+      - 6383:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.18
+  redis.c5:                
+    container_name: redis.c5
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c5
+    mem_limit: 100m
+    ports: 
+      - 6384:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.19
+  redis.c6:                         
+    container_name: redis.c6
+    privileged: true
+    image: chunhui2001/alpine:3.10.redis-5.0.5
+    hostname: redis.c6
+    mem_limit: 100m
+    ports: 
+      - 6385:6379
+    entrypoint: ["entrypoint.sh"]
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - ./conf/redis-5.0.5.conf:/etc/redis.conf:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.20
+ 
+

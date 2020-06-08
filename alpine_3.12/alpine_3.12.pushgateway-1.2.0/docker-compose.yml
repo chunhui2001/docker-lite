@@ -1,0 +1,28 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+    # aliases: net1
+
+services:
+  pushgateway:                
+    container_name: pushgateway
+    privileged: true
+    image: chunhui2001/alpine:3.12.pushgateway-1.2.0
+    hostname: pushgateway
+    mem_limit: 200m
+    ports: 
+      - 9091:9091
+    #entrypoint: ["sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
+    entrypoint: ["pushgateway", "--web.listen-address=0.0.0.0:9091"]
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.123

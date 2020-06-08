@@ -1,0 +1,52 @@
+
+########################
+### filebeat message ###
+########################
+# {
+#   "@timestamp": "2022-09-19T14:22:48.346Z",
+#   "@metadata": {
+#     "beat": "filebeat",
+#     "type": "_doc",
+#     "version": "8.4.0"
+#   },
+#   "message": "2022-09-19T14:22:48.191Z [INFO] - {.....kstream-kline-restful.go(280):57} > Binance-KLine: connectId=z3VIy3UswVo, opcode=1, message={\"E\":1663597368151,\"e\":\"kline\",\"k\":{\"B\":\"0\",\"L\":335795867,\"Q\":\"167370.00000000\",\"T\":1663597379999,\"V\":\"167370.00000000\",\"c\":\"0.99990000\",\"f\":335795677,\"h\":\"1.00000000\",\"i\":\"1m\",\"l\":\"0.99990000\",\"n\":191,\"o\":\"0.99990000\",\"q\":\"259384.79760000\",\"s\":\"BUSDUSDT\",\"t\":1663597320000,\"v\":\"259394.00000000\",\"x\":false},\"s\":\"BUSDUSDT\"}",
+#   "fields": {
+#     "app": "mywallet-crypto-kstream"
+#   },
+#   "input": {
+#     "type": "log"
+#   },
+#   "agent": {
+#     "type": "filebeat",
+#     "version": "8.4.0",
+#     "ephemeral_id": "76020a8f-5c28-4ada-be9a-0e454bae26a2",
+#     "id": "a4bc02d2-90a3-4dd9-911e-b2542a4d12e3",
+#     "name": "filebeat-server-1"
+#   },
+#   "ecs": {
+#     "version": "8.0.0"
+#   },
+#   "host": {
+#     "name": "filebeat-server-1"
+#   },
+#   "log": {
+#     "file": {
+#       "path": "/tmp/go-applogs/mywallet-crypto-kstream/applog.txt"
+#     },
+#     "offset": 9874687
+#   }
+# }
+
+
+# {
+#    "log.level":"error",
+#    "@timestamp":"2022-09-19T23:37:40.081+0800",
+#    "log.logger":"publisher_pipeline_output",
+#    "log.origin":{
+#       "file.name":"pipeline/client_worker.go",
+#       "file.line":150
+#    },
+#    "message":"Failed to connect to backoff(elasticsearch(http://host.docker.internal:9200)): Connection marked as failed because the onConnect callback failed: Elasticsearch is too old. Please upgrade the instance. If you would like to connect to older instances set output.elasticsearch.allow_older_versions to true. ES=8.1.2, Beat=8.4.0",
+#    "service.name":"filebeat",
+#    "ecs.version":"1.6.0"
+# }

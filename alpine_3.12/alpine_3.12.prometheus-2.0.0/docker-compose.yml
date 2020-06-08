@@ -1,0 +1,31 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+    # aliases: net1
+
+services:
+  prometheus:                
+    container_name: prometheus
+    privileged: true
+    image: chunhui2001/alpine:3.12.prometheus-2.0.0
+    hostname: prometheus
+    mem_limit: 200m
+    ports: 
+      - 9090:9090
+    #entrypoint: ["sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
+    entrypoint: ["/usr/local/bin/prometheus", "--config.file", "/etc/prometheus/prometheus.yml", "--storage.tsdb.path", "/var/lib/prometheus/", "--web.console.templates=/etc/prometheus/consoles", "--web.console.libraries=/etc/prometheus/console_libraries"]
+    volumes:
+      - ./conf/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./conf/targets/pushgateway:/etc/prometheus/targets/pushgateway:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.48

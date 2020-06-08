@@ -1,0 +1,15 @@
+# chunhui2001/alpine:dist.images
+# Version 0.0.1
+FROM chunhui2001/alpine:3.12.nginx
+MAINTAINER Chunhui.Zhang "chunhui2001@gmail.com"
+
+COPY images.zip /root/
+WORKDIR /root
+
+# docker build -f Dockerfile.images . -t 'chunhui2001/alpine:dist.images'
+# docker run -dit --entrypoint="top" -P --name alpine.images chunhui2001/alpine:dist.images
+# docker run -dit -p 18181:80 --name alpine.nginx chunhui2001/alpine:dist.images
+# docker push chunhui2001/alpine:dist.images
+# docker pull chunhui2001/alpine:dist.images
+
+

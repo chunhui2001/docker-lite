@@ -1,0 +1,45 @@
+
+
+###################### Filebeat Configuration Example #########################
+
+
+# ============================== Filebeat inputs ===============================
+filebeat.inputs:
+
+- type: filestream
+  id: my-filestream-id
+  enabled: true
+  paths:
+    - /tmp/logs/go-starter/*.txt
+  fields:
+    appName: go-starter
+    env: local
+    capation_gen: 1
+    git_hash: a957556
+
+# ============================== Filebeat modules ==============================
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# ======================= Elasticsearch template setting =======================
+setup.template.settings:
+  index.number_of_shards: 1
+
+# ---------------------------- Console Output ----------------------------
+output.console:
+  pretty: true
+
+# ---------------------------- Elasticsearch Output ----------------------------
+#output.elasticsearch:
+  #hosts: ["localhost:9200"]
+  #pipeline: my_pipeline_id
+
+# ================================= Processors =================================
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+

@@ -1,0 +1,17 @@
+version: '2.4'
+networks:
+    br0:
+      external: true
+      
+services:
+  graalvm:
+    container_name: graalvm
+    image: oracle/graalvm-ce:20.0.0-java11
+    mem_limit: 100m
+    entrypoint: ["/bin/bash", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
+    restart: always
+    networks:
+      - br0
+
+
+  

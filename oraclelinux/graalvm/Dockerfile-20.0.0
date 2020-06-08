@@ -1,0 +1,17 @@
+# chunhui2001/oraclelinux7:graalvm-20.0.0
+# Version 0.0.1
+FROM oracle/graalvm-ce:20.0.0-java11
+MAINTAINER Chunhui.Zhang "chunhui2001@gmail.com"
+
+## 查看版本
+# cat /etc/*elease
+
+WORKDIR /root
+
+# docker build -f Dockerfile . -t 'chunhui2001/oraclelinux7:graalvm-20.0.0'
+# docker run -dit --entrypoint="top" -P --name oraclelinux7.graalvm-20.0.0 chunhui2001/oraclelinux7:graalvm-20.0.0
+# docker run -dit -p 8080:8080 --name oraclelinux7.graalvm-20.1.0 chunhui2001/oraclelinux7:graalvm-20.0.0
+# docker push chunhui2001/oraclelinux7:graalvm-20.0.0
+# docker pull chunhui2001/oraclelinux7:graalvm-20.0.0
+
+

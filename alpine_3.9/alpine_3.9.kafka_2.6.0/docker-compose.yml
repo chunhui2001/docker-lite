@@ -1,0 +1,31 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+
+services:
+  kafka_2.6.0:                
+    container_name: kafka_2.6.0
+    image: chunhui2001/alpine:3.9.kafka_2.6.0
+    hostname: kafka_2.6.0
+    mem_limit: 600m
+    ports: 
+      # 局域网端口
+      - 9092:9092
+    expose:
+      # docker 内部网络端口
+      - "9093"
+    entrypoint: ["/opt/kafka/bin/kafka-server-start.sh", "/opt/kafka/config/server.properties"]
+    volumes:
+      - ./conf/server.properties:/opt/kafka/config/server.properties:ro
+    restart: always
+    networks:
+        br0:
+          ipv4_address: 172.16.197.65

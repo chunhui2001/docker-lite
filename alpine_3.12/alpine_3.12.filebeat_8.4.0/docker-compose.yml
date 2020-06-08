@@ -1,0 +1,34 @@
+
+## 安装Docker Compose
+# curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose --version
+# docker-compose up -d
+
+version: '2.4'
+networks:
+  br0:
+    external: true
+
+version: '2'
+services:
+  filebeat_8.4.0:
+    image: chunhui2001/alpine_3.12.filebeat:8.4.0
+    container_name: filebeat_8.4.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    environment:
+      - env=QA
+      - logstash=localhost
+      - project=demoproject
+    #entrypoint: ["/bin/sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
+    command: ["filebeat", "-e","-c", "/etc/filebeat.yml"]
+    volumes:
+      #- ./config/filebeat-console.yml:/etc/filebeat.yml
+      #- ./config/filebeat-es.yml:/etc/filebeat.yml
+      - ./config/filebeat-es-json.yml:/etc/filebeat.yml
+      - /tmp/go-applogs:/tmp/go-applogs
+    networks:
+        br0:
+          ipv4_address: 172.16.197.146
