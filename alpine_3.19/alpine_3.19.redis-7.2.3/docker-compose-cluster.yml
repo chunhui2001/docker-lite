@@ -14,6 +14,7 @@ networks:
 services:
   redis.c1:               
     container_name: redis.c1
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c1
@@ -33,6 +34,7 @@ services:
           ipv4_address: 172.16.197.21
   redis.c2:     
     container_name: redis.c2
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c2
@@ -52,6 +54,7 @@ services:
           ipv4_address: 172.16.197.16
   redis.c3:                
     container_name: redis.c3
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c3
@@ -71,6 +74,7 @@ services:
           ipv4_address: 172.16.197.17
   redis.c4:      
     container_name: redis.c4
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c4
@@ -90,6 +94,7 @@ services:
           ipv4_address: 172.16.197.18
   redis.c5:                
     container_name: redis.c5
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c5
@@ -109,6 +114,7 @@ services:
           ipv4_address: 172.16.197.19
   redis.c6:                         
     container_name: redis.c6
+    platform: linux/amd64
     privileged: true
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis.c6

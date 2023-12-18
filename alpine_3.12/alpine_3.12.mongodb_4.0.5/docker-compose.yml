@@ -13,6 +13,7 @@ networks:
 services:
   mon1:
     container_name: mon1
+    platform: linux/amd64
     image: chunhui2001/alpine:3.12.mongodb_4.0.5
     hostname: mon1
     #mem_limit: 100m
