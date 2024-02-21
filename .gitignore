@@ -61,3 +61,4 @@ testem.log
 Thumbs.db
 
 docker-config.yml
+*.tar.gz

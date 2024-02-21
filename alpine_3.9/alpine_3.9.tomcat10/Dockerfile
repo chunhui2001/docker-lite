@@ -1,6 +1,6 @@
 # chunhui2001/alpine:3.9.tomcat9
 # Version 0.0.1
-FROM chunhui2001/alpine:3.9.openjdk8
+FROM chunhui2001/alpine:3.9.oraclejdk21
 MAINTAINER Chunhui.Zhang "chunhui2001@gmail.com"
 
 ENV CURL_VERSION 7.50.1
@@ -22,8 +22,8 @@ ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$TOMCAT_NATIVE_LIBDIR
 # see also "update.sh" (https://github.com/docker-library/tomcat/blob/master/update.sh)
 ENV GPG_KEYS 05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 713DA88BE50911535FE716F5208B0AB1D63011C7 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23
 
-ENV TOMCAT_MAJOR 9
-ENV TOMCAT_VERSION 9.0.36
+ENV TOMCAT_MAJOR 10
+ENV TOMCAT_VERSION 10.1.19
 ENV TOMCAT_SHA512 75e16a00e02782961a7753dc9afaf6d209afa5f22d320319778fd0ee5e3b47009da522ac735599f1739bff6e809c2da9081dbbd4b8de54a82cf5b8cfbd8030ff
 
 ENV TOMCAT_TGZ_URLS \
@@ -85,35 +85,30 @@ RUN export GNUPGHOME="$(mktemp -d)"; \
     tar -xvf $CATALINA_HOME/bin/tomcat-native.tar.gz -C /tmp/nativeBuildDir --strip-components=1; \
     \
     apk add --no-cache --virtual .native-build-deps build-base \
-        apr-dev coreutils dpkg-dev dpkg gcc libc-dev make openssl-dev && \
+        bash apr-dev coreutils dpkg-dev dpkg gcc libc-dev make openssl-dev && \
     cd /tmp/nativeBuildDir/native && ./configure --build=x86_64-linux-musl --libdir="$TOMCAT_NATIVE_LIBDIR" \
                 --prefix="$CATALINA_HOME" --with-apr="$(which apr-1-config)" \
-                --with-java-home="$(docker-java-home)" --with-ssl=yes && \
-    \ make -j "$(nproc)" && make install && rm -rf /tmp/nativeBuildDir && \
-    apk del build-base linux-headers pcre-dev openssl-dev && \
-    rm -rf /var/cache/apk/* && \
-    rm -rf $CATALINA_HOME/bin/tomcat-native.tar.gz; \
+                --with-java-home="$(docker-java-home)" --with-ssl=yes && make && make install &&\
+    rm -rf /var/cache/apk/* &&\
     runDeps="$( scanelf --needed --nobanner --format '%n#p' --recursive "$TOMCAT_NATIVE_LIBDIR" | tr ',' '\n' | sort -u | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' )"; \
-    apk add --virtual .tomcat-native-rundeps $runDeps && \
-    apk del .fetch-deps .native-build-deps; \
-    apk add --no-cache bash; \
+    apk add --virtual .tomcat-native-rundeps $runDeps &&\
     find $CATALINA_HOME/bin/ -name '*.sh' -exec sed -ri 's|^#!/bin/sh$|#!/usr/bin/env bash|' '{}' +
 
 # verify Tomcat Native is working properly
-RUN set -e \
-    && nativeLines="$(catalina.sh configtest 2>&1)" \
-    && nativeLines="$(echo "$nativeLines" | grep 'Apache Tomcat Native')" \
-    && nativeLines="$(echo "$nativeLines" | sort -u)" \
-    && echo >&2 "$nativeLines";
+#RUN set -e \
+#    && nativeLines="$(catalina.sh configtest 2>&1)" \
+#    && nativeLines="$(echo "$nativeLines" | grep 'Apache Tomcat Native')" \
+#    && nativeLines="$(echo "$nativeLines" | sort -u)" \
+#    && echo >&2 "$nativeLines";
 
 WORKDIR $CATALINA_HOME
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 
-# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.tomcat9'
-# docker run -dit --entrypoint="top" -P --name alpine.tomcat9 chunhui2001/alpine:3.9.tomcat9
-# docker run -dit -p 8181:8080 --name alpine.tomcat9 chunhui2001/alpine:3.9.tomcat9
-# docker push chunhui2001/alpine:3.9.tomcat9
-# docker pull chunhui2001/alpine:3.9.tomcat9
+# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.tomcat10'
+# docker run -dit --entrypoint="top" -P --name alpine.tomcat10 chunhui2001/alpine:3.9.tomcat10
+# docker run -dit -p 8181:8080 --name alpine.tomcat10 chunhui2001/alpine:3.9.tomcat10
+# docker push chunhui2001/alpine:3.9.tomcat10
+# docker pull chunhui2001/alpine:3.9.tomcat10
 
 

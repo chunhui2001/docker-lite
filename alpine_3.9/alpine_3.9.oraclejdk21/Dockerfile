@@ -1,20 +1,26 @@
-# chunhui2001/alpine:3.9.openjdk15
+# chunhui2001/alpine:3.9.oraclejdk21
 # Version 0.0.1
-FROM openjdk:19-jdk-alpine3.16
+FROM alpine:3.9
 MAINTAINER Chunhui.Zhang "chunhui2001@gmail.com"
 
 ENV CURL_VERSION 7.50.1
 ENV LANG=C.UTF-8
+ENV LANG C.UTF-8
+ENV JAVA_HOME /usr/local/java
 
 #########################################
 # apk add iproute2 # ss vs netstat      #
 # ss -ptl                               #
 # apk add drill # drill vs nslookup&dig #
 # 中文支持                                #
-# curl openjdk15                         #
+# curl oracle jdk 9                     #
 # 时区支持                                #
 # 查看系统版本 $ cat /etc/alpine-release   #
 #########################################
+
+WORKDIR /tmp
+ADD jdk-21_linux-aarch64_bin.tar.gz /usr/local/
+RUN ln -s /usr/local/jdk-21.0.2 $JAVA_HOME && ln -s $JAVA_HOME/bin/java /usr/bin/java && ln -s $JAVA_HOME/bin/javac /usr/bin/javac
 
 # Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
@@ -54,19 +60,19 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
         wget https://curl.haxx.se/download/curl-$CURL_VERSION.tar.bz2 && \
         tar xjvf curl-$CURL_VERSION.tar.bz2 && rm curl-$CURL_VERSION.tar.bz2 && cd curl-$CURL_VERSION && \
         ./configure --with-nghttp2=/usr --prefix=/usr --with-ssl --enable-ipv6 --enable-unix-sockets --without-libidn --disable-static --disable-ldap --with-pic && \
-        make && make install && \
+        make && make install  && \
         \
-        cd / && rm -r curl-$CURL_VERSION && rm -r /var/cache/apk && rm -r /usr/share/man && \
+        cd / && rm -r /tmp/curl-* && rm -r /var/cache/apk && rm -r /usr/share/man && \
         apk del curldeps && apk del glibc-i18n && rm "/root/.wget-hsts" && apk del .build-dependencies && \
-        rm "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" 
+        rm  -r /tmp/glibc*
 
 
-WORKDIR /root
+CMD ["sh"]
 
-# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.openjdk15'
-# docker run -dit --entrypoint="top" -P --name alpine.openjdk15 chunhui2001/alpine:3.9.openjdk15
-# docker run -dit -p 8080:8080 --name alpine.openjdk15 chunhui2001/alpine:3.9.openjdk15
-# docker push chunhui2001/alpine:3.9.openjdk15
-# docker pull chunhui2001/alpine:3.9.openjdk15
 
+# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.oraclejdk21'
+# docker run -dit --entrypoint="top" -P --name alpine.oraclejdk21 chunhui2001/alpine:3.9.oraclejdk21
+# docker run -dit -p 8080:8080 --name alpine.oraclejdk21 chunhui2001/alpine:3.9.oraclejdk21
+# docker push chunhui2001/alpine:3.9.oraclejdk21
+# docker pull chunhui2001/alpine:3.9.oraclejdk21
 

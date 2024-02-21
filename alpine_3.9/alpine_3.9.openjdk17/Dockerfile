@@ -1,20 +1,24 @@
-# chunhui2001/alpine:3.9.openjdk15
+# chunhui2001/alpine:3.9.oraclejdk17
 # Version 0.0.1
-FROM openjdk:19-jdk-alpine3.16
+FROM alpine:3.9
 MAINTAINER Chunhui.Zhang "chunhui2001@gmail.com"
 
 ENV CURL_VERSION 7.50.1
 ENV LANG=C.UTF-8
+ENV LANG C.UTF-8
+ENV JAVA_HOME /usr/local/java
 
 #########################################
 # apk add iproute2 # ss vs netstat      #
 # ss -ptl                               #
 # apk add drill # drill vs nslookup&dig #
 # 中文支持                                #
-# curl openjdk15                         #
+# curl oracle jdk 9                     #
 # 时区支持                                #
 # 查看系统版本 $ cat /etc/alpine-release   #
 #########################################
+
+WORKDIR /tmp
 
 # Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
@@ -49,24 +53,30 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
     rm "/etc/apk/keys/sgerrand.rsa.pub" && \
     /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true && \
     echo "export LANG=$LANG" > /etc/profile.d/locale.sh && \
-    apk add --update --no-cache openssl openssl-dev nghttp2-dev ca-certificates && \
+    apk add --update --no-cache openssl openssl-dev nghttp2-dev ca-certificates git libc6-compat curl bash && \
     apk add --update --no-cache --virtual curldeps g++ make perl && \
         wget https://curl.haxx.se/download/curl-$CURL_VERSION.tar.bz2 && \
         tar xjvf curl-$CURL_VERSION.tar.bz2 && rm curl-$CURL_VERSION.tar.bz2 && cd curl-$CURL_VERSION && \
         ./configure --with-nghttp2=/usr --prefix=/usr --with-ssl --enable-ipv6 --enable-unix-sockets --without-libidn --disable-static --disable-ldap --with-pic && \
-        make && make install && \
+        make && make install  && \
         \
-        cd / && rm -r curl-$CURL_VERSION && rm -r /var/cache/apk && rm -r /usr/share/man && \
+        cd / && rm -r /tmp/curl-* && rm -r /var/cache/apk && rm -r /usr/share/man && \
         apk del curldeps && apk del glibc-i18n && rm "/root/.wget-hsts" && apk del .build-dependencies && \
-        rm "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" 
+        rm  -r /tmp/glibc*
+
+COPY asdf /root/asdf
+#RUN source $HOME/asdf/asdf.sh &&\
+#    asdf plugin-add java https://github.com/halcyon/asdf-java.git &&\
+#    asdf install java adoptopenjdk-17.0.0+35 &&\
+
+# $ ls -lah /root/.asdf/installs/java/adoptopenjdk-17.0.0+35/bin/java
+
+CMD ["sh"]
 
 
-WORKDIR /root
-
-# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.openjdk15'
-# docker run -dit --entrypoint="top" -P --name alpine.openjdk15 chunhui2001/alpine:3.9.openjdk15
-# docker run -dit -p 8080:8080 --name alpine.openjdk15 chunhui2001/alpine:3.9.openjdk15
-# docker push chunhui2001/alpine:3.9.openjdk15
-# docker pull chunhui2001/alpine:3.9.openjdk15
-
+# docker build -f Dockerfile . -t 'chunhui2001/alpine:3.9.oraclejdk17'
+# docker run -dit --entrypoint="top" -P --name alpine.oraclejdk17 chunhui2001/alpine:3.9.oraclejdk17
+# docker run -dit -p 8080:8080 --name alpine.oraclejdk17 chunhui2001/alpine:3.9.oraclejdk17
+# docker push chunhui2001/alpine:3.9.oraclejdk17
+# docker pull chunhui2001/alpine:3.9.oraclejdk17
 
