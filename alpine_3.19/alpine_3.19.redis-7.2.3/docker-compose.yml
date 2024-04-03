@@ -14,6 +14,7 @@ networks:
 services:
   redis7.2.3:                
     container_name: redis7.2.3
+    platform: linux/amd64
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis7.2.3
     mem_limit: 100m

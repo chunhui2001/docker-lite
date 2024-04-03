@@ -4,6 +4,8 @@ docker run --name redis-master -p 6379:6379 --network br0 -d redis redis-server 
 docker run --name redis-replica1 -p 6380:6379 --network br0 -d redis redis-server --appendonly yes --slaveof redis-master 6379
 docker run --name redis-replica2 -p 6381:6379 --network br0 -d redis redis-server --appendonly yes --slaveof redis-master 6379
 
+$ redis-cli -h redis.c3 -c -p 6379
+
 ## redis sentinel
 echo "sentinel monitor mymaster 172.16.197.21 6379 2" > sentinel_1.conf
 echo "sentinel monitor mymaster 172.16.197.21 6379 2" > sentinel_2.conf
