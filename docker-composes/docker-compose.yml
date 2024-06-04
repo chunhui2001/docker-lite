@@ -14,7 +14,7 @@ services:
     platform: linux/amd64
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis7.2.3
-    mem_limit: 100m
+    mem_limit: 400m
     ports:
       - 6579:6379
     #entrypoint: ["/bin/sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
@@ -36,7 +36,7 @@ services:
     cap_add:
       - SYS_NICE
     hostname: mysql_single
-    mem_limit: 2600m
+    mem_limit: 400m
     environment:
       - MYSQL_ROOT_PASSWORD=Cc
     ports:
@@ -56,7 +56,7 @@ services:
     #platform: linux/amd64
     image: chunhui2001/mongodb:mongo_8.0.0-rc4
     hostname: mon1
-    #mem_limit: 100m
+    mem_limit: 400m
     ports:
       - 27017:27017
     #entrypoint: ["/bin/sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
