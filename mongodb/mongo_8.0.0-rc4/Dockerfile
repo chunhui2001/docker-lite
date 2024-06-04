@@ -23,7 +23,8 @@ ENV LC_ALL zh_CN.UTF-8
 
 WORKDIR /data/db
 
-# docker build -f Dockerfile . -t 'chunhui2001/mongodb:mongo_8.0.0-rc4'
+# docker build --platform linux/amd64 -f Dockerfile . -t 'chunhui2001/mongodb:mongo_8.0.0-rc4'
+# docker push chunhui2001/mongodb:mongo_8.0.0-rc4
 # docker run -dit --entrypoint="top" --name mongodb-8.0.0-rc4 chunhui2001/mongodb:mongo_8.0.0-rc4
 # docker run -dit -p 27017:27017 --name mongodb-8.0.0-rc4 chunhui2001/mongodb:mongo_8.0.0-rc4
 
