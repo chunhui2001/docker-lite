@@ -5,7 +5,7 @@
 # docker-compose --version
 # docker-compose up -d
 
-version: '2.4'
+#version: '2.4'
 
 networks:
     br0:
@@ -17,7 +17,7 @@ services:
     platform: linux/amd64
     image: chunhui2001/alpine:3.19.redis-7.2.3
     hostname: redis7.2.3
-    mem_limit: 100m
+    #mem_limit: 100m
     ports:
       - 6579:6379
     #entrypoint: ["/bin/sh", "-c", "while true; do echo 1 >/dev/null 2>/dev/null; sleep 1; done"]
